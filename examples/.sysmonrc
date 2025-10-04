@@ -1,0 +1,30 @@
+# Example System Monitor Configuration
+# Copy to ~/.sysmonrc (Linux/macOS) or %USERPROFILE%\.sysmonrc (Windows)
+
+# Sampling Intervals (milliseconds)
+# Balance between responsiveness and overhead
+cpu_interval=1000          # CPU metrics every 1 second
+memory_interval=5000       # Memory metrics every 5 seconds
+disk_interval=1000         # Disk I/O every 1 second
+network_interval=1000      # Network I/O every 1 second
+process_interval=2000      # Process list every 2 seconds
+
+# Alert Thresholds (percentage)
+# Trigger visual alerts when resources exceed these values
+cpu_threshold=90.0         # Alert when CPU > 90%
+memory_threshold=90.0      # Alert when memory > 90%
+
+# Display Settings
+target_fps=30              # UI refresh rate (10-120)
+show_per_core=true         # Show individual CPU cores
+use_colors=true            # Enable color output
+color_scheme=default       # Color scheme (default, minimal, high-contrast)
+
+# Process Tree Settings
+expand_tree=false          # Auto-expand all tree nodes
+max_processes=1000         # Maximum processes to display
+sort_by=cpu                # Sort processes by: cpu, memory, name, pid
+
+# Advanced Settings
+debug_mode=false           # Enable debug logging
+log_file=/tmp/sysmon.log   # Log file path (empty = no logging)
