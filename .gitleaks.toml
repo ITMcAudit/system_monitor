@@ -1,0 +1,75 @@
+# GitLeaks Configuration for System Monitor
+# Detects secrets, credentials, and sensitive data in commits
+
+title = "System Monitor GitLeaks Configuration"
+
+[extend]
+useDefault = true
+
+# Custom rules for this project
+[[rules]]
+id = "windows-api-key"
+description = "Windows API Key or Token"
+regex = '''(?i)(api[_-]?key|api[_-]?token|access[_-]?token)['":\s]*[a-zA-Z0-9]{20,}'''
+tags = ["key", "API", "token"]
+
+[[rules]]
+id = "hardcoded-password"
+description = "Hardcoded password in source"
+regex = '''(?i)(password|passwd|pwd)['":\s]*=\s*['"][^'"]{3,}['"]'''
+tags = ["password", "credentials"]
+
+[[rules]]
+id = "private-key"
+description = "Private key file content"
+regex = '''-----BEGIN (?:RSA|DSA|EC|OPENSSH) PRIVATE KEY-----'''
+tags = ["key", "private"]
+
+[[rules]]
+id = "connection-string"
+description = "Database connection string"
+regex = '''(?i)(jdbc|mysql|postgres|mongodb):\/\/[^\s'"]+'''
+tags = ["connection", "database"]
+
+[[rules]]
+id = "aws-access-key"
+description = "AWS Access Key ID"
+regex = '''AKIA[0-9A-Z]{16}'''
+tags = ["AWS", "key"]
+
+[[rules]]
+id = "github-token"
+description = "GitHub Personal Access Token"
+regex = '''ghp_[0-9a-zA-Z]{36}'''
+tags = ["GitHub", "token"]
+
+# Allowlist for false positives
+[allowlist]
+description = "Allowlist for known false positives"
+regexes = [
+    '''example\.com''',
+    '''localhost''',
+    '''127\.0\.0\.1''',
+    '''0\.0\.0\.0''',
+    '''test[_-]?password''',
+    '''dummy[_-]?key''',
+    '''placeholder''',
+]
+
+paths = [
+    '''\.gitignore$''',
+    '''\.md$''',
+    '''SECURITY\.md$''',
+    '''README\.md$''',
+]
+
+commits = []
+
+# Entropy detection for high-entropy strings
+[entropy]
+Min = "4.5"
+Max = "8.0"
+Group = "1"
+
+[entropy.Group1]
+regex = '''['"][0-9a-zA-Z]{20,}['"]'''

@@ -1,0 +1,178 @@
+# SBOM (Software Bill of Materials)
+# Component inventory for security and license compliance
+
+---
+document_version: "1.0"
+created: "2025-10-03"
+last_updated: "2025-10-03"
+project:
+  name: "System Monitor"
+  version: "1.0.0"
+  description: "Cross-platform system resource monitoring application"
+  repository: "https://github.com/yourusername/system-monitor"
+  license: "MIT"
+
+## Direct Dependencies
+
+dependencies:
+  - name: "FTXUI"
+    version: "5.0.0"
+    license: "MIT"
+    source: "https://github.com/ArthurSonzogni/ftxui"
+    purpose: "Terminal UI library"
+    critical: true
+    security_notes: "Official upstream, well-maintained"
+    cve_status: "None known"
+    verification: "Git tag signature verified"
+    
+  - name: "C++ Standard Library"
+    version: "C++20"
+    license: "Implementation-dependent (typically permissive)"
+    source: "Compiler-provided"
+    purpose: "Core language features"
+    critical: true
+    security_notes: "Compiler-maintained, follows ISO standards"
+    
+## Platform-Specific Dependencies
+
+### Windows
+platform_dependencies:
+  windows:
+    - name: "Windows SDK"
+      version: "10.0.19041.0+"
+      license: "Microsoft Software License"
+      components:
+        - "pdh.lib - Performance Data Helper"
+        - "psapi.lib - Process Status API"
+        - "iphlpapi.lib - IP Helper API"
+      security_notes: "Microsoft-signed system libraries"
+      
+### Linux
+  linux:
+    - name: "GNU C Library (glibc)"
+      version: "2.31+"
+      license: "LGPL"
+      security_notes: "Distribution-maintained"
+      
+    - name: "/proc filesystem"
+      version: "Kernel-dependent"
+      license: "GPL"
+      purpose: "System metrics collection"
+      security_notes: "Kernel interface, read-only access"
+      
+### macOS
+  macos:
+    - name: "Xcode Developer Tools"
+      version: "13.0+"
+      license: "Apple Software License"
+      components:
+        - "CoreFoundation framework"
+        - "IOKit framework"
+      security_notes: "Apple-signed system frameworks"
+
+## Build Tools
+
+build_tools:
+  - name: "CMake"
+    version: "3.20+"
+    license: "BSD-3-Clause"
+    purpose: "Build system"
+    security_notes: "Widely used, community-audited"
+    
+  - name: "C++ Compiler"
+    variants:
+      - name: "MSVC"
+        version: "19.29+ (Visual Studio 2019+)"
+        license: "Microsoft Software License"
+      - name: "GCC"
+        version: "10.0+"
+        license: "GPL"
+      - name: "Clang"
+        version: "12.0+"
+        license: "Apache 2.0 with LLVM Exception"
+
+## Development Dependencies
+
+dev_dependencies:
+  - name: "Git"
+    version: "2.30+"
+    license: "GPL-2.0"
+    purpose: "Version control"
+    
+  - name: "GitLeaks"
+    version: "8.0+"
+    license: "MIT"
+    purpose: "Secrets detection"
+    security_role: "Security scanning"
+    
+  - name: "clang-tidy"
+    version: "14.0+"
+    license: "Apache 2.0 with LLVM Exception"
+    purpose: "Static analysis"
+    security_role: "Code quality and security checks"
+
+## Runtime Requirements
+
+runtime:
+  - name: "Operating System"
+    versions:
+      windows: "Windows 10+ (1909+)"
+      linux: "Ubuntu 20.04+, Fedora 35+, or equivalent"
+      macos: "macOS 11 (Big Sur)+"
+    security_notes: "Supported OS versions receive security updates"
+
+## Supply Chain Security
+
+supply_chain:
+  verification_methods:
+    - "Git tag signature verification for FTXUI"
+    - "CMake FetchContent from official repositories"
+    - "Reproducible builds enabled"
+    - "No third-party package managers (except OS package managers)"
+    
+  trust_anchors:
+    - "FTXUI: GitHub repository ArthurSonzogni/ftxui"
+    - "C++ Standard: ISO/IEC 14882:2020"
+    - "Platform APIs: OS vendor official documentation"
+    
+  update_policy:
+    frequency: "Monthly security review"
+    critical_updates: "Within 48 hours of disclosure"
+    testing: "Full test suite before updates"
+
+## Known Vulnerabilities
+
+vulnerabilities:
+  status: "None known as of 2025-10-03"
+  last_scan: "2025-10-03"
+  scanning_tools:
+    - "GitLeaks"
+    - "GitHub Dependabot (when applicable)"
+    - "Manual security review"
+
+## License Compliance
+
+licenses:
+  compatibility: "All dependencies MIT or permissive licenses"
+  attribution_required:
+    - "FTXUI: See FTXUI LICENSE"
+  copyleft_components: "None (GPL/LGPL only in system libraries)"
+  
+## Security Contacts
+
+security:
+  reporting: "See SECURITY.md"
+  updates: "GitHub Security Advisories"
+  verification: "GPG signatures recommended for releases"
+
+## Notes
+
+notes:
+  - "Minimal dependency footprint by design"
+  - "Platform APIs preferred over third-party libraries"
+  - "No network-dependent dependencies"
+  - "FTXUI is the only external library required"
+  - "All dependencies from official, trusted sources"
+  
+---
+# End of SBOM

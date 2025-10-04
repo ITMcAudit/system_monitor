@@ -1,0 +1,125 @@
+name: CI/CD Pipeline
+
+on:
+  push:
+    branches: [ main, develop ]
+  pull_request:
+    branches: [ main ]
+  release:
+    types: [ created ]
+
+jobs:
+  build-windows:
+    name: Build Windows
+    runs-on: windows-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      
+      - name: Setup MSVC
+        uses: microsoft/setup-msbuild@v1
+      
+      - name: Configure CMake
+        run: |
+          mkdir build
+          cd build
+          cmake .. -G "Visual Studio 17 2022" -A x64
+      
+      - name: Build
+        run: |
+          cd build
+          cmake --build . --config Release
+      
+      - name: Run basic tests
+        run: |
+          cd build\Release
+          .\SystemMonitor.exe --help
+      
+      - name: Upload artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: SystemMonitor-Windows
+          path: build/Release/SystemMonitor.exe
+
+  build-linux:
+    name: Build Linux
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      
+      - name: Install dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y build-essential cmake git
+      
+      - name: Configure CMake
+        run: |
+          mkdir build
+          cd build
+          cmake .. -DCMAKE_BUILD_TYPE=Release
+      
+      - name: Build
+        run: |
+          cd build
+          make -j$(nproc)
+      
+      - name: Run basic tests
+        run: |
+          cd build
+          ./SystemMonitor --help
+      
+      - name: Upload artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: SystemMonitor-Linux
+          path: build/SystemMonitor
+
+  build-macos:
+    name: Build macOS
+    runs-on: macos-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      
+      - name: Install dependencies
+        run: |
+          brew install cmake
+      
+      - name: Configure CMake
+        run: |
+          mkdir build
+          cd build
+          cmake .. -DCMAKE_BUILD_TYPE=Release
+      
+      - name: Build
+        run: |
+          cd build
+          make -j$(sysctl -n hw.ncpu)
+      
+      - name: Run basic tests
+        run: |
+          cd build
+          ./SystemMonitor --help
+      
+      - name: Upload artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: SystemMonitor-macOS
+          path: build/SystemMonitor
+
+  code-quality:
+    name: Code Quality Checks
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      
+      - name: Check code formatting
+        run: |
+          # Add clang-format check if needed
+          echo "Code formatting check placeholder"
+      
+      - name: Check for TODO/FIXME
+        run: |
+          ! grep -r "FIXME\|XXX" src/ include/ || echo "Found FIXME/XXX comments"
